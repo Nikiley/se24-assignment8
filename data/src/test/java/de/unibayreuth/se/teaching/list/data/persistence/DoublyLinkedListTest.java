@@ -1,5 +1,6 @@
 package de.unibayreuth.se.teaching.list.data.persistence;
 
+import de.unibayreuth.se.teaching.list.data.pattern.Observer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,11 +10,15 @@ import org.junit.jupiter.api.Test;
  */
 class DoublyLinkedListTest {
     private DoublyLinkedList list;
+    private Observer o1 = new ListClearedObserver();
+    private Observer o2 = new ListClearedObserver();
 
     @BeforeEach
     void setUp() {
         list = DoublyLinkedList.makeList();
         list.clear();
+        list.attach(o1);
+        list.attach(o2);
     }
 
     @Test

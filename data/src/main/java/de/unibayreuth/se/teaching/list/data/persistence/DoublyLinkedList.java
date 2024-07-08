@@ -1,5 +1,7 @@
 package de.unibayreuth.se.teaching.list.data.persistence;
 
+import de.unibayreuth.se.teaching.list.data.pattern.Observer;
+import de.unibayreuth.se.teaching.list.data.pattern.Subject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,13 +10,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.testcontainers.shaded.org.bouncycastle.asn1.x500.style.RFC4519Style.o;
+
 /**
  * Our doubly linked list implementation from previous assignments.
  */
 @Getter
 @Setter
 @Slf4j
-public class DoublyLinkedList {
+public class DoublyLinkedList implements Subject {
+
     private Element start;
     private Element end;
     private int length;
@@ -22,16 +30,6 @@ public class DoublyLinkedList {
 
     private static final Logger logger = LoggerFactory.getLogger(DoublyLinkedListComponent.class);
 
-/*
-    private DoublyLinkedList(Element start, Element end, int length){
-        this.start = start;
-        this.end = end;
-        this.length = length;
-    }
-    private DoublyLinkedList(){
-        new DoublyLinkedList(null, null, 0);
-    }
-*/
     public static DoublyLinkedList makeList(){
         if(instance == null){
             instance = new DoublyLinkedList();
@@ -148,6 +146,7 @@ public class DoublyLinkedList {
         start = null;
         end = null;
         length = 0;
+        updateObservers();
     }
 
     /**
@@ -211,7 +210,27 @@ public class DoublyLinkedList {
         private Element prev;
     }
     public static Element makeElement(double value){
-        Element e = new Element(value);
-        return e;
+        return new Element(value);
+    }
+
+
+    // Subject-Methoden
+
+    private List<Observer> observers = new ArrayList<>();
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void updateObservers() {
+        for (Observer observer : observers){
+            observer.update(this);
+        }
     }
 }
