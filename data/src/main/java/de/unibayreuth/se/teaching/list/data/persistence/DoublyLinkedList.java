@@ -1,5 +1,6 @@
 package de.unibayreuth.se.teaching.list.data.persistence;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -17,8 +18,29 @@ public class DoublyLinkedList {
     private Element start;
     private Element end;
     private int length;
+    private static DoublyLinkedList instance;
 
     private static final Logger logger = LoggerFactory.getLogger(DoublyLinkedListComponent.class);
+
+/*
+    private DoublyLinkedList(Element start, Element end, int length){
+        this.start = start;
+        this.end = end;
+        this.length = length;
+    }
+    private DoublyLinkedList(){
+        new DoublyLinkedList(null, null, 0);
+    }
+*/
+    public static DoublyLinkedList makeList(){
+        if(instance == null){
+            instance = new DoublyLinkedList();
+        }
+        return instance;
+    }
+
+
+
 
     /**
      * Add an element at the end of the list
@@ -180,10 +202,16 @@ public class DoublyLinkedList {
      */
     @Setter
     @Getter
-    @RequiredArgsConstructor
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+
+
     public static class Element {
         private final double value;
         private Element next;
         private Element prev;
+    }
+    public static Element makeElement(double value){
+        Element e = new Element(value);
+        return e;
     }
 }
